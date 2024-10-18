@@ -21,44 +21,44 @@ import { collections } from "../database";
 import { ObjectId } from "mongodb";
 import type { Message } from "$lib/types/Message";
 import type { Assistant } from "$lib/types/Assistant";
-import { assistantHasWebSearch } from "./assistant";
 
 export async function getTools(
 	toolsPreference: Array<string>,
 	assistant: Pick<Assistant, "rag" | "tools"> | undefined
 ): Promise<Tool[]> {
-	let preferences = toolsPreference;
+	return [];
+	// let preferences = toolsPreference;
 
-	if (assistant) {
-		if (assistant?.tools?.length) {
-			preferences = assistant.tools;
+	// if (assistant) {
+	// 	if (assistant?.tools?.length) {
+	// 		preferences = assistant.tools;
 
-			if (assistantHasWebSearch(assistant)) {
-				preferences.push(websearch._id.toString());
-			}
-		} else {
-			if (assistantHasWebSearch(assistant)) {
-				return [websearch, directlyAnswer];
-			}
-			return [directlyAnswer];
-		}
-	}
+	// 		if (assistantHasWebSearch(assistant)) {
+	// 			preferences.push(websearch._id.toString());
+	// 		}
+	// 	} else {
+	// 		if (assistantHasWebSearch(assistant)) {
+	// 			return [websearch, directlyAnswer];
+	// 		}
+	// 		return [directlyAnswer];
+	// 	}
+	// }
 
-	// filter based on tool preferences, add the tools that are on by default
-	const activeConfigTools = toolFromConfigs.filter((el) => {
-		if (el.isLocked && el.isOnByDefault && !assistant) return true;
-		return preferences?.includes(el._id.toString()) ?? (el.isOnByDefault && !assistant);
-	});
+	// // filter based on tool preferences, add the tools that are on by default
+	// const activeConfigTools = toolFromConfigs.filter((el) => {
+	// 	if (el.isLocked && el.isOnByDefault && !assistant) return true;
+	// 	return preferences?.includes(el._id.toString()) ?? (el.isOnByDefault && !assistant);
+	// });
 
-	// find tool where the id is in preferences
-	const activeCommunityTools = await collections.tools
-		.find({
-			_id: { $in: preferences.map((el) => new ObjectId(el)) },
-		})
-		.toArray()
-		.then((el) => el.map((el) => ({ ...el, call: getCallMethod(el) })));
+	// // find tool where the id is in preferences
+	// const activeCommunityTools = await collections.tools
+	// 	.find({
+	// 		_id: { $in: preferences.map((el) => new ObjectId(el)) },
+	// 	})
+	// 	.toArray()
+	// 	.then((el) => el.map((el) => ({ ...el, call: getCallMethod(el) })));
 
-	return [...activeConfigTools, ...activeCommunityTools];
+	// return [...activeConfigTools, ...activeCommunityTools];
 }
 
 async function* callTool(
