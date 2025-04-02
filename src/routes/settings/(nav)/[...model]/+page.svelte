@@ -100,31 +100,4 @@
 		{isActive ? "Active model" : "Activate"}
 	</button>
 
-	<div class="relative flex w-full flex-col gap-2">
-		<div class="flex w-full flex-row content-between">
-			<h3 class="mb-1.5 text-lg font-semibold text-gray-800">System Prompt</h3>
-			{#if hasCustomPreprompt}
-				<button
-					class="ml-auto underline decoration-gray-300 hover:decoration-gray-700"
-					on:click|stopPropagation={() =>
-						($settings.customPrompts[$page.params.model] = model.preprompt)}
-				>
-					Reset
-				</button>
-			{/if}
-		</div>
-		<textarea
-			rows="10"
-			class="w-full resize-none rounded-md border-2 bg-gray-100 p-2"
-			bind:value={$settings.customPrompts[$page.params.model]}
-		/>
-		{#if model.tokenizer && $settings.customPrompts[$page.params.model]}
-			<TokensCounter
-				classNames="absolute bottom-2 right-2"
-				prompt={$settings.customPrompts[$page.params.model]}
-				modelTokenizer={model.tokenizer}
-				truncate={model?.parameters?.truncate}
-			/>
-		{/if}
-	</div>
 </div>
